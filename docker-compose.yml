@@ -1,22 +1,23 @@
 version: "3.3"
 
 services:
-  rdtclient:
-    image: rogerfar/rdtclient
-    container_name: rdtclient
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
     environment:
       - PUID=1000
       - PGID=1000
+      - TZ=${TIMEZONE}
+      - WEBUI_PORT=8080
+      - TORRENTING_PORT=6881
     volumes:
-      - ${DATA}/downloads:/data/downloads
-      - ${CONTAINERS}/rdtclient:/data/db
-    restart: always
-    logging:
-      driver: json-file
-      options:
-        max-size: 10m
+      - ${CONTAINERS}/qbittorrent/config:/config
+      - ${DATA}:/downloads
     ports:
-      - "6500:6500"
+      - 8080:8080
+      - 6881:6881
+      - 6881:6881/udp
+    restart: unless-stopped
 
   watchtower:
     image: containrrr/watchtower
