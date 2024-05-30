@@ -89,32 +89,6 @@ services:
       - ${DATA}:/data
     restart: unless-stopped
 
-  bazarr:
-    image: linuxserver/bazarr
-    container_name: bazarr
-    networks:
-      default:
-        ipv4_address: 172.20.1.4
-    ports:
-      - 6767:6767
-    depends_on:
-      - sonarr
-      - radarr
-    labels:
-      - com.centurylinklabs.watchtower.enable=true
-      - traefik.enable=true
-      - traefik.http.routers.bazarr.rule=Host(`bazarr.${DOMAIN}`)
-      - traefik.http.routers.bazarr.entrypoints=websecured
-      - traefik.http.routers.bazarr.tls.certresolver=myresolver
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TIMEZONE}
-    volumes:
-      - ${CONTAINERS}/bazarr/config:/config
-      - ${DATA}:/data
-    restart: unless-stopped
-
   prowlarr:
     image: linuxserver/prowlarr
     container_name: prowlarr
