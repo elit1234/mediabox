@@ -31,9 +31,6 @@ services:
   emby:
     image: lscr.io/linuxserver/emby:latest
     container_name: emby
-    networks:
-      default:
-        ipv4_address: 172.20.1.1
     labels:
       - com.centurylinklabs.watchtower.enable=true
       - traefik.enable=true
@@ -57,9 +54,6 @@ services:
   sonarr:
     image: linuxserver/sonarr
     container_name: sonarr
-    networks:
-      default:
-        ipv4_address: 172.20.1.2
     ports:
       - 8989:8989
     depends_on:
@@ -83,9 +77,6 @@ services:
   radarr:
     image: linuxserver/radarr
     container_name: radarr
-    networks:
-      default:
-        ipv4_address: 172.20.1.3
     ports:
       - 7878:7878
     depends_on:
@@ -109,9 +100,6 @@ services:
   prowlarr:
     image: linuxserver/prowlarr
     container_name: prowlarr
-    networks:
-      default:
-        ipv4_address: 172.20.1.7
     ports:
       - 9696:9696
     labels:
@@ -132,9 +120,6 @@ services:
   portainer:
     image: portainer/portainer-ce
     container_name: portainer
-    networks:
-      default:
-        ipv4_address: 172.20.2.2
     ports:
       - 9000:9000
       - 8000:8000
@@ -154,9 +139,6 @@ services:
   portainer_agent:
     image: portainer/agent
     container_name: portainer-agent
-    networks:
-      default:
-        ipv4_address: 172.20.2.3
     ports:
       - 9001:9001
     volumes:
@@ -170,9 +152,6 @@ services:
   organizr:
     image: organizr/organizr
     container_name: organizr
-    networks:
-      default:
-        ipv4_address: 172.20.2.4
     ports:
       - 9983:80
     labels:
@@ -193,9 +172,6 @@ services:
   duplicati:
     image: linuxserver/duplicati
     container_name: duplicati
-    networks:
-      default:
-        ipv4_address: 172.20.2.5
     ports:
       - 8200:8200
     labels:
@@ -213,10 +189,3 @@ services:
       - ${CONTAINERS}/duplicati/backups:/backups
       - /:/source
     restart: unless-stopped
-
-networks:
-  default:
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.20.0.0/16
