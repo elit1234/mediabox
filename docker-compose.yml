@@ -94,7 +94,6 @@ services:
       - TZ=${TIMEZONE}
     volumes:
       - ${CONTAINERS}/radarr/config:/config
-      - ${CONTAINERS}/radarr/empty:/downloads # Not used
       - ${DATA}:/data
     restart: unless-stopped
 
