@@ -11,38 +11,30 @@ services:
     command: --label-enable --cleanup --schedule "0 0 4 * * *"
     restart: unless-stopped
 
-  plex:
-    image: linuxserver/plex
-    container_name: plex
+  emby:
+    image: lscr.io/linuxserver/emby:latest
+    container_name: emby
     networks:
       default:
         ipv4_address: 172.20.1.1
-    ports:
-      - 32400:32400/tcp
-      - 32400:32400/udp
-      - 3005:3005/tcp
-      - 8324:8324/tcp
-      - 32469:32469/tcp
-      - 1901:1900/udp
-      - 32410:32410/udp
-      - 32412:32412/udp
-      - 32413:32413/udp
-      - 32414:32414/udp
     labels:
       - com.centurylinklabs.watchtower.enable=true
       - traefik.enable=true
-      - traefik.http.routers.plex.rule=Host(`plex.${DOMAIN}`)
-      - traefik.http.routers.plex.entrypoints=websecured
-      - traefik.http.services.plex.loadbalancer.server.port=32400
-      - traefik.http.routers.plex.tls.certresolver=myresolver
+      - traefik.http.routers.emby.rule=Host(`emby.${DOMAIN}`)
+      - traefik.http.routers.emby.entrypoints=websecured
+      - traefik.http.services.emby.loadbalancer.server.port=8096
+      - traefik.http.routers.emby.tls.certresolver=myresolver
     environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - VERSION=docker
-      - ADVERTISE_IP="https://plex.${DOMAIN}:443"
+      - PUID=1000
+      - PGID=1000
+      - TZ=${TIMEZONE}
     volumes:
-      - ${CONTAINERS}/plex/config:/config
+      - ${CONTAINERS}/emby/config:/config
       - ${DATA}:/data
+    ports:
+      - 8096:8096
+    devices:
+      - /dev/dri:/dev/dri #optional
     restart: unless-stopped
 
   sonarr:
@@ -144,31 +136,6 @@ services:
       - AUTO_UPDATE=true
     volumes:
       - ${CONTAINERS}/prowlarr/config:/config
-    restart: unless-stopped
-
-  sabnzbd:
-    image: linuxserver/sabnzbd
-    container_name: sabnzbd
-    networks:
-      default:
-        ipv4_address: 172.20.1.8
-    ports:
-      - 9050:8080
-      - 9051:9090
-    labels:
-      - com.centurylinklabs.watchtower.enable=true
-      - traefik.enable=true
-      - traefik.http.routers.sabnzbd.rule=Host(`sabnzbd.${DOMAIN}`)
-      - traefik.http.routers.sabnzbd.entrypoints=websecured
-      - traefik.http.routers.sabnzbd.tls.certresolver=myresolver
-      - traefik.http.services.sabnzbd.loadbalancer.server.port=8080
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TIMEZONE}
-    volumes:
-      - ${CONTAINERS}/sabnzbd/config:/config
-      - ${DOWNLOADS}/usenet:/downloads
     restart: unless-stopped
 
   portainer:
